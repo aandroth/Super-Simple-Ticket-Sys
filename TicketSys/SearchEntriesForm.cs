@@ -20,6 +20,7 @@ namespace TicketSys
 
         public SearchTickets.GetTicketDelegate getTicketDelegate;
         public SearchTickets.RemoveTicketDelegate removeTicketDelegate;
+        public SearchTickets.EditTicketDelegate editTicketDelegate;
 
         public delegate List<TicketInfo> GetFilteredTicketListDelegate();
         GetFilteredTicketListDelegate getFilteredTicketListDelegate;
@@ -28,6 +29,8 @@ namespace TicketSys
         CloseAllFormsDelegate closeAllFormsDelegate;
 
         bool cancelButtonClicked = false;
+        List<TicketInfo> ticketList;
+        int selectedTicketId = 0;
 
         public SearchEntriesForm()
         {
@@ -38,6 +41,7 @@ namespace TicketSys
                                  CloseAllFormsDelegate closeAllForms,
                                  GetFilteredTicketListDelegate getFilteredTicketList,
                                  SearchTickets.RemoveTicketDelegate removeTicket,
+                                 SearchTickets.EditTicketDelegate editTicket,
                                  SearchTickets.GetTicketDelegate getTicket)
         {
             InitializeComponent();
@@ -48,6 +52,7 @@ namespace TicketSys
             getFilteredTicketListDelegate = getFilteredTicketList;
             getTicketDelegate = getTicket;
             removeTicketDelegate = removeTicket;
+            editTicketDelegate = editTicket;
 
             dataGridView1.Columns.Add("Titles", "Tickets");
 
@@ -62,7 +67,7 @@ namespace TicketSys
         {
             dataGridView1.Rows.Clear();
 
-            List<TicketInfo> ticketList = getFilteredTicketListDelegate.Invoke();
+            ticketList = getFilteredTicketListDelegate.Invoke();
             foreach (TicketInfo t in ticketList)
                 dataGridView1.Rows.Add(t.title);
         }
@@ -85,10 +90,12 @@ namespace TicketSys
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             this.Hide();
+            selectedTicketId = ticketList[dataGridView1.CurrentCell.RowIndex].id;
             TicketViewEdit tve = new TicketViewEdit(my_UnhideForm,
                                                     removeTicketAtSelectedIndex,
-                                                    closeAllForms, 
-                                                    getTicketDelegate.Invoke(dataGridView1.CurrentCell.RowIndex));
+                                                    editTicketAtSelectedIndex,
+                                                    closeAllForms,
+                                                    getTicketDelegate.Invoke(selectedTicketId));
             tve.ShowDialog();
         }
         public void my_UnhideForm()
@@ -102,7 +109,13 @@ namespace TicketSys
 
         public void removeTicketAtSelectedIndex()
         {
-            removeTicketDelegate.Invoke(dataGridView1.CurrentCell.RowIndex);
+            removeTicketDelegate.Invoke(selectedTicketId);
+            loadFilteredTicketList();
+        }
+
+        public void editTicketAtSelectedIndex(TicketInfo ticketInfo)
+        {
+            editTicketDelegate.Invoke(selectedTicketId, ticketInfo);
             loadFilteredTicketList();
         }
 

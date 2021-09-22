@@ -18,6 +18,9 @@ namespace TicketSys
         public delegate void RemoveTicketDelegate();
         RemoveTicketDelegate removeTicketDelegate;
 
+        public delegate void EditTicketDelegate(TicketInfo ticketInfo);
+        EditTicketDelegate editTicketDelegate;
+
         public delegate void CloseAllFormsDelegate();
         CloseAllFormsDelegate closeAllFormsDelegate;
 
@@ -25,12 +28,14 @@ namespace TicketSys
 
         public TicketViewEdit(GoToSearchEntriesWindowDelegate goToSearchEntries,
                               RemoveTicketDelegate removeTicket,
+                              EditTicketDelegate editTicket,
                               CloseAllFormsDelegate closeAllForms, 
                               TicketInfo ticketInfo)
         {
             InitializeComponent();
             goToSearchEntriesWindowDelegate = goToSearchEntries;
             removeTicketDelegate = removeTicket;
+            editTicketDelegate = editTicket;
             closeAllFormsDelegate = closeAllForms;
 
             textBox2.Text = ticketInfo.title;
@@ -46,14 +51,17 @@ namespace TicketSys
 
         private void button1_Click(object sender, EventArgs e)
         {
-            TicketInfo editedTicket = new TicketInfo(textBox2.Text, (CAR_PARTS)comboBox1.SelectedIndex, textBox1.Text);
+            editTicketDelegate.Invoke(new TicketInfo(textBox2.Text, (CAR_PARTS)comboBox1.SelectedIndex, textBox1.Text));
+            this.Hide();
+            cancelButtonClicked = true;
+            goBackToSearchEntries();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
             cancelButtonClicked = true;
-            goBackToHome();
+            goBackToSearchEntries();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -61,9 +69,9 @@ namespace TicketSys
             this.Hide();
             removeTicketDelegate.Invoke();
             cancelButtonClicked = true;
-            goBackToHome();
+            goBackToSearchEntries();
         }
-        public void goBackToHome()
+        public void goBackToSearchEntries()
         {
             goToSearchEntriesWindowDelegate.Invoke();
             this.Close();
