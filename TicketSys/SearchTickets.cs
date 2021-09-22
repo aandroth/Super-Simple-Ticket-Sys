@@ -15,17 +15,29 @@ namespace TicketSys
         public delegate void GoToHomeWindowDelegate();
         GoToHomeWindowDelegate goToHomeWindowDelegate;
 
+        public delegate TicketInfo GetTicketDelegate(int idx);
+        GetTicketDelegate getTicketDelegate;
+
         public delegate List<TicketInfo> GetTicketListDelegate();
         GetTicketListDelegate getTicketListDelegate;
 
         public delegate void CloseAllFormsDelegate();
         CloseAllFormsDelegate closeAllFormsDelegate;
-        public SearchTickets(GoToHomeWindowDelegate goHome, GetTicketListDelegate getTickets, CloseAllFormsDelegate closeAllForms)
+
+        bool cancelButtonClicked = false;
+
+        public SearchTickets(GoToHomeWindowDelegate goHome, 
+                             GetTicketListDelegate getTickets,
+                             GetTicketDelegate getTicket,
+                             CloseAllFormsDelegate closeAllForms)
         {
             InitializeComponent();
             goToHomeWindowDelegate = goHome;
+            getTicketDelegate = getTicket;
             getTicketListDelegate = getTickets;
             closeAllFormsDelegate = closeAllForms;
+
+            comboBox1.SelectedIndex = 0;
         }
 
         private void SearchTickets_Load(object sender, EventArgs e)
@@ -36,14 +48,32 @@ namespace TicketSys
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            List<TicketInfo> ticketInfoList = getTicketListDelegate.Invoke();
-            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm, closeAllForms, ticketInfoList);
+            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm, closeAllForms, getFilteredTickets(), getTicketDelegate);
             sef.ShowDialog();
+        }
+
+        private List<TicketInfo> getFilteredTickets()
+        {
+            List<TicketInfo> results = getTicketListDelegate.Invoke();
+
+            List<string> keywordList = textBox1.Text.Split(',').ToList<string>();
+
+            List<TicketInfo> q = results.Where((t) => filterByPart(t.part)).Where((t) => keywordList.All(s => t.title.Contains(s))).ToList<TicketInfo>();
+
+            return q;
+        }
+
+        private bool filterByPart(CAR_PARTS part)
+        {
+            if (comboBox1.SelectedIndex == 0)
+                return true;
+            return (int)part == comboBox1.SelectedIndex - 1;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
+            cancelButtonClicked = true;
             goBackToHome();
         }
         public void my_UnhideForm()
@@ -62,7 +92,8 @@ namespace TicketSys
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            closeAllFormsDelegate.Invoke();
+            if(!cancelButtonClicked)
+                closeAllFormsDelegate.Invoke();
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
         }

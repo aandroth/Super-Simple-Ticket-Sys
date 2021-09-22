@@ -18,8 +18,12 @@ namespace TicketSys
         public delegate void GoToSearchWindowDelegate();
         GoToSearchWindowDelegate goToSearchWindowDelegate;
 
+        public SearchTickets.GetTicketDelegate getTicketDelegate;
+
         public delegate void CloseAllFormsDelegate();
         CloseAllFormsDelegate closeAllFormsDelegate;
+
+        bool cancelButtonClicked = false;
 
         public SearchEntriesForm()
         {
@@ -28,21 +32,21 @@ namespace TicketSys
         public SearchEntriesForm(GoToHomeWindowDelegate goHome, 
                                  GoToSearchWindowDelegate goSearch, 
                                  CloseAllFormsDelegate closeAllForms, 
-                                 List<TicketInfo> ticketList)
+                                 List<TicketInfo> ticketList,
+                                 SearchTickets.GetTicketDelegate getTicket)
         {
             InitializeComponent();
 
             goToHomeWindowDelegate = goHome;
             goToSearchWindowDelegate  = goSearch;
+            getTicketDelegate = getTicket;
             closeAllFormsDelegate = closeAllForms;
 
             dataGridView1.Columns.Add("Titles", "Tickets");
-            dataGridView1.Columns[0].Width = dataGridView1.Width;
 
             foreach(TicketInfo t in ticketList)
                 dataGridView1.Rows.Add(t.title);
         }
-
         private void SearchEntriesList_Load(object sender, EventArgs e)
         {
 
@@ -58,18 +62,30 @@ namespace TicketSys
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
+            cancelButtonClicked = true;
             goToSearchWindowDelegate.Invoke();
             this.Close();
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
+            this.Hide();
+            TicketViewEdit tve = new TicketViewEdit(my_UnhideForm, closeAllForms, getTicketDelegate.Invoke(dataGridView1.CurrentCell.RowIndex));
+            tve.ShowDialog();
+        }
+        public void my_UnhideForm()
+        {
+            this.Show();
+        }
+        public void closeAllForms()
+        {
+            this.Close();
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            closeAllFormsDelegate.Invoke();
+            if (!cancelButtonClicked)
+                closeAllFormsDelegate.Invoke();
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
         }

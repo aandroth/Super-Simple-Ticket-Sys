@@ -21,6 +21,8 @@ namespace TicketSys
         public delegate void CloseAllFormsDelegate();
         CloseAllFormsDelegate closeAllFormsDelegate;
 
+        bool cancelButtonClicked = false;
+
         string ticketTitle = "";
         CAR_PARTS ticketPart = CAR_PARTS.OTHER;
         string ticketDescription = "";
@@ -47,13 +49,6 @@ namespace TicketSys
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            exe.Invoke();
-            this.Close();
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             sendBackTicketInfo.Invoke(new TicketInfo(textBox1.Text, (CAR_PARTS)comboBox1.SelectedIndex, textBox2.Text));
@@ -62,10 +57,19 @@ namespace TicketSys
             exe.Invoke();
             this.Close();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            cancelButtonClicked = true;
+            exe.Invoke();
+            this.Close();
+        }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            closeAllFormsDelegate.Invoke();
+            if (!cancelButtonClicked)
+                closeAllFormsDelegate.Invoke();
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
         }
