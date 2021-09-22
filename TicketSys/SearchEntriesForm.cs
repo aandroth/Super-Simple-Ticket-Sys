@@ -10,17 +10,26 @@ using System.Windows.Forms;
 
 namespace TicketSys
 {
-    public partial class SearchTickets : Form
+    public partial class SearchEntriesForm : Form
     {
         public delegate void GoToHomeWindowDelegate();
         GoToHomeWindowDelegate goToHomeWindowDelegate;
-        public SearchTickets(GoToHomeWindowDelegate goHome)
+
+        public delegate void GoToSearchWindowDelegate();
+        GoToSearchWindowDelegate goToSearchWindowDelegate;
+        public SearchEntriesForm()
         {
             InitializeComponent();
+        }
+        public SearchEntriesForm(GoToHomeWindowDelegate goHome, GoToSearchWindowDelegate goSearch)
+        {
+            InitializeComponent();
+
             goToHomeWindowDelegate = goHome;
+            goToSearchWindowDelegate  = goSearch;
         }
 
-        private void SearchTickets_Load(object sender, EventArgs e)
+        private void SearchEntriesList_Load(object sender, EventArgs e)
         {
 
         }
@@ -28,22 +37,14 @@ namespace TicketSys
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm);
-            sef.ShowDialog();
+            goToHomeWindowDelegate.Invoke();
+            this.Close();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
-            goBackToHome();
-        }
-        public void my_UnhideForm()
-        {
-            this.Show();
-        }
-        public void goBackToHome()
-        {
-            goToHomeWindowDelegate.Invoke();
+            goToSearchWindowDelegate.Invoke();
             this.Close();
         }
     }

@@ -52,9 +52,6 @@ namespace TicketSys
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int val = comboBox1.SelectedIndex;
-            CAR_PARTS carP = (CAR_PARTS)val;
-
             sendBackTicketInfo.Invoke(new TicketInfo(textBox1.Text, (CAR_PARTS)comboBox1.SelectedIndex, textBox2.Text));
 
             this.Hide();

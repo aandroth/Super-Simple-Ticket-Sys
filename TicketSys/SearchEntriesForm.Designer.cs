@@ -1,7 +1,7 @@
 ﻿
 namespace TicketSys
 {
-    partial class SearchEntriesList
+    partial class SearchEntriesForm
     {
         /// <summary>
         /// Required designer variable.
@@ -53,6 +53,7 @@ namespace TicketSys
             this.button1.TabIndex = 1;
             this.button1.Text = "Home";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -62,6 +63,7 @@ namespace TicketSys
             this.button2.TabIndex = 2;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // SearchEntriesList
             // 
