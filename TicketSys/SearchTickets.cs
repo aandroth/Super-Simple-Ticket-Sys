@@ -14,10 +14,18 @@ namespace TicketSys
     {
         public delegate void GoToHomeWindowDelegate();
         GoToHomeWindowDelegate goToHomeWindowDelegate;
-        public SearchTickets(GoToHomeWindowDelegate goHome)
+
+        public delegate List<TicketInfo> GetTicketListDelegate();
+        GetTicketListDelegate getTicketListDelegate;
+
+        public delegate void CloseAllFormsDelegate();
+        CloseAllFormsDelegate closeAllFormsDelegate;
+        public SearchTickets(GoToHomeWindowDelegate goHome, GetTicketListDelegate getTickets, CloseAllFormsDelegate closeAllForms)
         {
             InitializeComponent();
             goToHomeWindowDelegate = goHome;
+            getTicketListDelegate = getTickets;
+            closeAllFormsDelegate = closeAllForms;
         }
 
         private void SearchTickets_Load(object sender, EventArgs e)
@@ -28,7 +36,8 @@ namespace TicketSys
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm);
+            List<TicketInfo> ticketInfoList = getTicketListDelegate.Invoke();
+            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm, closeAllForms, ticketInfoList);
             sef.ShowDialog();
         }
 
@@ -45,6 +54,17 @@ namespace TicketSys
         {
             goToHomeWindowDelegate.Invoke();
             this.Close();
+        }
+        public void closeAllForms()
+        {
+            this.Close();
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            closeAllFormsDelegate.Invoke();
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
         }
     }
 }

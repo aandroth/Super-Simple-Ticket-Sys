@@ -13,10 +13,13 @@ namespace TicketSys
     public partial class CreateTicketForm : Form
     {
         public delegate void ExeUnhide();
-        public delegate void SendBackTicketInfo(TicketInfo ticketInfo);
-
         ExeUnhide exe;
+
+        public delegate void SendBackTicketInfo(TicketInfo ticketInfo);
         SendBackTicketInfo sendBackTicketInfo;
+
+        public delegate void CloseAllFormsDelegate();
+        CloseAllFormsDelegate closeAllFormsDelegate;
 
         string ticketTitle = "";
         CAR_PARTS ticketPart = CAR_PARTS.OTHER;
@@ -26,11 +29,12 @@ namespace TicketSys
         {
             InitializeComponent();
         }
-        public CreateTicketForm(ExeUnhide e, SendBackTicketInfo sendTicket)
+        public CreateTicketForm(ExeUnhide e, SendBackTicketInfo sendTicket, CloseAllFormsDelegate closeAllForms)
         {
             InitializeComponent();
             exe = e;
             sendBackTicketInfo = sendTicket;
+            closeAllFormsDelegate = closeAllForms;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -57,6 +61,13 @@ namespace TicketSys
             this.Hide();
             exe.Invoke();
             this.Close();
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            closeAllFormsDelegate.Invoke();
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
         }
     }
 }

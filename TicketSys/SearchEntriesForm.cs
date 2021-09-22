@@ -17,16 +17,30 @@ namespace TicketSys
 
         public delegate void GoToSearchWindowDelegate();
         GoToSearchWindowDelegate goToSearchWindowDelegate;
+
+        public delegate void CloseAllFormsDelegate();
+        CloseAllFormsDelegate closeAllFormsDelegate;
+
         public SearchEntriesForm()
         {
             InitializeComponent();
         }
-        public SearchEntriesForm(GoToHomeWindowDelegate goHome, GoToSearchWindowDelegate goSearch)
+        public SearchEntriesForm(GoToHomeWindowDelegate goHome, 
+                                 GoToSearchWindowDelegate goSearch, 
+                                 CloseAllFormsDelegate closeAllForms, 
+                                 List<TicketInfo> ticketList)
         {
             InitializeComponent();
 
             goToHomeWindowDelegate = goHome;
             goToSearchWindowDelegate  = goSearch;
+            closeAllFormsDelegate = closeAllForms;
+
+            dataGridView1.Columns.Add("Titles", "Tickets");
+            dataGridView1.Columns[0].Width = dataGridView1.Width;
+
+            foreach(TicketInfo t in ticketList)
+                dataGridView1.Rows.Add(t.title);
         }
 
         private void SearchEntriesList_Load(object sender, EventArgs e)
@@ -46,6 +60,18 @@ namespace TicketSys
             this.Hide();
             goToSearchWindowDelegate.Invoke();
             this.Close();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            closeAllFormsDelegate.Invoke();
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
         }
     }
 }

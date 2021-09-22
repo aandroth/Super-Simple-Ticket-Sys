@@ -14,9 +14,9 @@ namespace TicketSys
     public enum CAR_PARTS { ENGINE, CHASIS, WINDSHIELD, OTHER}
     public struct TicketInfo
     {
-        string title;
-        CAR_PARTS part;
-        string description;
+        public string title;
+        public CAR_PARTS part;
+        public string description;
 
         public TicketInfo(string _title, CAR_PARTS _part, string _description)
         {
@@ -53,14 +53,14 @@ namespace TicketSys
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            CreateTicketForm ctf = new CreateTicketForm(my_UnhideForm, AddTicketInfo);
+            CreateTicketForm ctf = new CreateTicketForm(my_UnhideForm, AddTicketInfo, closeForm);
             ctf.ShowDialog();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
-            SearchTickets searchForm = new SearchTickets(my_UnhideForm);
+            SearchTickets searchForm = new SearchTickets(my_UnhideForm, GetTicketList, closeForm);
             searchForm.ShowDialog();
         }
 
@@ -77,6 +77,16 @@ namespace TicketSys
         public void SearchTicketInfo(TicketInfo ticketInfo)
         {
             ticketInfoList.Add(ticketInfo);
+        }
+
+        public List<TicketInfo> GetTicketList()
+        {
+            return ticketInfoList;
+        }
+
+        public void closeForm()
+        {
+            this.Close();
         }
     }
 }
