@@ -88,7 +88,7 @@ namespace TicketSys
             // button3
             // 
             this.button3.BackColor = System.Drawing.Color.Red;
-            this.button3.Location = new System.Drawing.Point(669, 89);
+            this.button3.Location = new System.Drawing.Point(673, 35);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(106, 86);
             this.button3.TabIndex = 5;

@@ -10,13 +10,15 @@ using System.Windows.Forms;
 
 namespace TicketSys
 {
+
+    public enum CAR_PARTS { ENGINE, CHASIS, WINDSHIELD, OTHER}
     public struct TicketInfo
     {
         string title;
-        string part;
+        CAR_PARTS part;
         string description;
 
-        public TicketInfo(string _title, string _part, string _description)
+        public TicketInfo(string _title, CAR_PARTS _part, string _description)
         {
             title = _title;
             part = _part;
@@ -31,6 +33,11 @@ namespace TicketSys
         public Form1()
         {
             InitializeComponent();
+
+            ticketInfoList.Add(new TicketInfo("Broken Cylinder", CAR_PARTS.ENGINE, "Second cylinder cracked. Needs to be replaced."));
+            ticketInfoList.Add(new TicketInfo("Chipped Windshield", CAR_PARTS.WINDSHIELD, "Windshield chipped on the road. Needs repair."));
+            ticketInfoList.Add(new TicketInfo("Dented Door", CAR_PARTS.CHASIS, "Door dented in accident. Needs repair."));
+            ticketInfoList.Add(new TicketInfo("Cupholder Replacement", CAR_PARTS.OTHER, "Customer wants cupholder sized to fit large slurpee cups. Replace with correct part."));
         }
 
         private void label1_Click(object sender, EventArgs e)
