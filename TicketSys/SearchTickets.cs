@@ -18,6 +18,9 @@ namespace TicketSys
         public delegate TicketInfo GetTicketDelegate(int idx);
         GetTicketDelegate getTicketDelegate;
 
+        public delegate void RemoveTicketDelegate(int idx);
+        RemoveTicketDelegate removeTicketDelegate;
+
         public delegate List<TicketInfo> GetTicketListDelegate();
         GetTicketListDelegate getTicketListDelegate;
 
@@ -29,12 +32,14 @@ namespace TicketSys
         public SearchTickets(GoToHomeWindowDelegate goHome, 
                              GetTicketListDelegate getTickets,
                              GetTicketDelegate getTicket,
+                             RemoveTicketDelegate removeTicket,
                              CloseAllFormsDelegate closeAllForms)
         {
             InitializeComponent();
             goToHomeWindowDelegate = goHome;
             getTicketDelegate = getTicket;
             getTicketListDelegate = getTickets;
+            removeTicketDelegate = removeTicket;
             closeAllFormsDelegate = closeAllForms;
 
             comboBox1.SelectedIndex = 0;
@@ -48,7 +53,7 @@ namespace TicketSys
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm, closeAllForms, getFilteredTickets(), getTicketDelegate);
+            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm, closeAllForms, getFilteredTickets(), removeTicketDelegate, getTicketDelegate);
             sef.ShowDialog();
         }
 

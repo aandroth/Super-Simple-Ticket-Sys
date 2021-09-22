@@ -19,6 +19,7 @@ namespace TicketSys
         GoToSearchWindowDelegate goToSearchWindowDelegate;
 
         public SearchTickets.GetTicketDelegate getTicketDelegate;
+        public SearchTickets.RemoveTicketDelegate removeTicketDelegate;
 
         public delegate void CloseAllFormsDelegate();
         CloseAllFormsDelegate closeAllFormsDelegate;
@@ -33,6 +34,7 @@ namespace TicketSys
                                  GoToSearchWindowDelegate goSearch, 
                                  CloseAllFormsDelegate closeAllForms, 
                                  List<TicketInfo> ticketList,
+                                 SearchTickets.RemoveTicketDelegate removeTicket,
                                  SearchTickets.GetTicketDelegate getTicket)
         {
             InitializeComponent();
@@ -40,6 +42,7 @@ namespace TicketSys
             goToHomeWindowDelegate = goHome;
             goToSearchWindowDelegate  = goSearch;
             getTicketDelegate = getTicket;
+            removeTicketDelegate = removeTicket;
             closeAllFormsDelegate = closeAllForms;
 
             dataGridView1.Columns.Add("Titles", "Tickets");
@@ -70,7 +73,10 @@ namespace TicketSys
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             this.Hide();
-            TicketViewEdit tve = new TicketViewEdit(my_UnhideForm, closeAllForms, getTicketDelegate.Invoke(dataGridView1.CurrentCell.RowIndex));
+            TicketViewEdit tve = new TicketViewEdit(my_UnhideForm,
+                                                    removeTicketAtSelectedIndex,
+                                                    closeAllForms, 
+                                                    getTicketDelegate.Invoke(dataGridView1.CurrentCell.RowIndex));
             tve.ShowDialog();
         }
         public void my_UnhideForm()
@@ -81,6 +87,12 @@ namespace TicketSys
         {
             this.Close();
         }
+
+        public void removeTicketAtSelectedIndex()
+        {
+            removeTicketDelegate.Invoke(dataGridView1.CurrentCell.RowIndex);
+        }
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);

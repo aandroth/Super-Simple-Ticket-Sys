@@ -60,7 +60,7 @@ namespace TicketSys
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
-            SearchTickets searchForm = new SearchTickets(my_UnhideForm, GetTicketList, GetTicketByIndex, closeForm);
+            SearchTickets searchForm = new SearchTickets(my_UnhideForm, GetTicketList, GetTicketByIndex, RemoveTicketByIndex, closeForm);
             searchForm.ShowDialog();
         }
 
@@ -87,6 +87,11 @@ namespace TicketSys
         public TicketInfo GetTicketByIndex(int idx)
         {
             return ticketInfoList[idx];
+        }
+
+        public void RemoveTicketByIndex(int idx)
+        {
+            ticketInfoList.RemoveAt(idx);
         }
 
         public void closeForm()
