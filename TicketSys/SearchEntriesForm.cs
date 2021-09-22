@@ -21,6 +21,9 @@ namespace TicketSys
         public SearchTickets.GetTicketDelegate getTicketDelegate;
         public SearchTickets.RemoveTicketDelegate removeTicketDelegate;
 
+        public delegate List<TicketInfo> GetFilteredTicketListDelegate();
+        GetFilteredTicketListDelegate getFilteredTicketListDelegate;
+
         public delegate void CloseAllFormsDelegate();
         CloseAllFormsDelegate closeAllFormsDelegate;
 
@@ -32,8 +35,8 @@ namespace TicketSys
         }
         public SearchEntriesForm(GoToHomeWindowDelegate goHome, 
                                  GoToSearchWindowDelegate goSearch, 
-                                 CloseAllFormsDelegate closeAllForms, 
-                                 List<TicketInfo> ticketList,
+                                 CloseAllFormsDelegate closeAllForms,
+                                 GetFilteredTicketListDelegate getFilteredTicketList,
                                  SearchTickets.RemoveTicketDelegate removeTicket,
                                  SearchTickets.GetTicketDelegate getTicket)
         {
@@ -41,18 +44,27 @@ namespace TicketSys
 
             goToHomeWindowDelegate = goHome;
             goToSearchWindowDelegate  = goSearch;
+            closeAllFormsDelegate = closeAllForms;
+            getFilteredTicketListDelegate = getFilteredTicketList;
             getTicketDelegate = getTicket;
             removeTicketDelegate = removeTicket;
-            closeAllFormsDelegate = closeAllForms;
 
             dataGridView1.Columns.Add("Titles", "Tickets");
 
-            foreach(TicketInfo t in ticketList)
-                dataGridView1.Rows.Add(t.title);
+            loadFilteredTicketList();
         }
         private void SearchEntriesList_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void loadFilteredTicketList()
+        {
+            dataGridView1.Rows.Clear();
+
+            List<TicketInfo> ticketList = getFilteredTicketListDelegate.Invoke();
+            foreach (TicketInfo t in ticketList)
+                dataGridView1.Rows.Add(t.title);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -91,6 +103,7 @@ namespace TicketSys
         public void removeTicketAtSelectedIndex()
         {
             removeTicketDelegate.Invoke(dataGridView1.CurrentCell.RowIndex);
+            loadFilteredTicketList();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

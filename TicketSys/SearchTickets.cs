@@ -53,19 +53,19 @@ namespace TicketSys
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm, closeAllForms, getFilteredTickets(), removeTicketDelegate, getTicketDelegate);
+            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, my_UnhideForm, closeAllForms, getFilteredTickets, removeTicketDelegate, getTicketDelegate);
             sef.ShowDialog();
         }
 
         private List<TicketInfo> getFilteredTickets()
         {
-            List<TicketInfo> results = getTicketListDelegate.Invoke();
+            List<TicketInfo> allTickets = getTicketListDelegate.Invoke();
 
             List<string> keywordList = textBox1.Text.Split(',').ToList<string>();
 
-            List<TicketInfo> q = results.Where((t) => filterByPart(t.part)).Where((t) => keywordList.All(s => t.title.Contains(s))).ToList<TicketInfo>();
+            List<TicketInfo> filteredTickets = allTickets.Where((t) => filterByPart(t.part)).Where((t) => keywordList.All(s => t.title.Contains(s))).ToList<TicketInfo>();
 
-            return q;
+            return filteredTickets;
         }
 
         private bool filterByPart(CAR_PARTS part)
