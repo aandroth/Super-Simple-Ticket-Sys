@@ -49,22 +49,18 @@ namespace TicketSys
 
             comboBox1.SelectedIndex = 0;
         }
-
-        private void SearchTickets_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            SearchEntriesForm sef = new SearchEntriesForm(goBackToHome, 
-                                                          my_UnhideForm, 
+            SearchEntriesForm sef = new SearchEntriesForm(my_UnhideForm, 
                                                           closeAllForms, 
                                                           getFilteredTickets, 
                                                           removeTicketDelegate,
                                                           editTicketDelegate,
                                                           getTicketDelegate);
+            sef.Tag = this;
+            sef.StartPosition = FormStartPosition.Manual;
+            sef.Location = this.Location;
             sef.ShowDialog();
         }
 

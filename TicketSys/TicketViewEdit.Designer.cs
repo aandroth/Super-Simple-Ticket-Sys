@@ -113,10 +113,8 @@ namespace TicketSys
             this.Controls.Add(this.comboBox1);
             this.Name = "TicketViewEdit";
             this.Text = "TicketViewEdit";
-            this.Load += new System.EventHandler(this.TicketViewEdit_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

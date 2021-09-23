@@ -39,21 +39,12 @@ namespace TicketSys
             closeAllFormsDelegate = closeAllForms;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             sendBackTicketInfo.Invoke(new TicketInfo(textBox1.Text, (CAR_PARTS)comboBox1.SelectedIndex, textBox2.Text));
 
             this.Hide();
+            cancelButtonClicked = true;
             exe.Invoke();
             this.Close();
         }

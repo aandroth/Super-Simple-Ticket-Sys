@@ -12,9 +12,6 @@ namespace TicketSys
 {
     public partial class SearchEntriesForm : Form
     {
-        public delegate void GoToHomeWindowDelegate();
-        GoToHomeWindowDelegate goToHomeWindowDelegate;
-
         public delegate void GoToSearchWindowDelegate();
         GoToSearchWindowDelegate goToSearchWindowDelegate;
 
@@ -36,8 +33,7 @@ namespace TicketSys
         {
             InitializeComponent();
         }
-        public SearchEntriesForm(GoToHomeWindowDelegate goHome, 
-                                 GoToSearchWindowDelegate goSearch, 
+        public SearchEntriesForm(GoToSearchWindowDelegate goSearch, 
                                  CloseAllFormsDelegate closeAllForms,
                                  GetFilteredTicketListDelegate getFilteredTicketList,
                                  SearchTickets.RemoveTicketDelegate removeTicket,
@@ -46,7 +42,6 @@ namespace TicketSys
         {
             InitializeComponent();
 
-            goToHomeWindowDelegate = goHome;
             goToSearchWindowDelegate  = goSearch;
             closeAllFormsDelegate = closeAllForms;
             getFilteredTicketListDelegate = getFilteredTicketList;
@@ -58,10 +53,6 @@ namespace TicketSys
 
             loadFilteredTicketList();
         }
-        private void SearchEntriesList_Load(object sender, EventArgs e)
-        {
-
-        }
 
         public void loadFilteredTicketList()
         {
@@ -70,13 +61,6 @@ namespace TicketSys
             ticketList = getFilteredTicketListDelegate.Invoke();
             foreach (TicketInfo t in ticketList)
                 dataGridView1.Rows.Add(t.title);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            goToHomeWindowDelegate.Invoke();
-            this.Close();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -96,6 +80,9 @@ namespace TicketSys
                                                     editTicketAtSelectedIndex,
                                                     closeAllForms,
                                                     getTicketDelegate.Invoke(selectedTicketId));
+            tve.Tag = this;
+            tve.StartPosition = FormStartPosition.Manual;
+            tve.Location = this.Location;
             tve.ShowDialog();
         }
         public void my_UnhideForm()

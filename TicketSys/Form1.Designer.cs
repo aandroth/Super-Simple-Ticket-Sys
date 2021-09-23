@@ -43,7 +43,6 @@ namespace TicketSys
             this.TicketSysLabel.Size = new System.Drawing.Size(324, 76);
             this.TicketSysLabel.TabIndex = 0;
             this.TicketSysLabel.Text = "TicketSys";
-            this.TicketSysLabel.Click += new System.EventHandler(this.TicketSysLabel_Click);
             // 
             // button1
             // 

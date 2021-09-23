@@ -110,7 +110,6 @@ namespace TicketSys
             this.Controls.Add(this.comboBox1);
             this.Name = "SearchTickets";
             this.Text = "SearchTickets";
-            this.Load += new System.EventHandler(this.SearchTickets_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

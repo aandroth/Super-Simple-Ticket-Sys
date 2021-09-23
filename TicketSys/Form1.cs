@@ -48,21 +48,13 @@ namespace TicketSys
             ticketInfoList.Add(new TicketInfo("Bent Frame", CAR_PARTS.CHASIS, "Frame is bent under driver's door."));
             ticketInfoList.Add(new TicketInfo("Faded Paint", CAR_PARTS.OTHER, "Needs a fresh coat of paint."));
         }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void TicketSysLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
             CreateTicketForm ctf = new CreateTicketForm(my_UnhideForm, AddTicketInfo, closeForm);
+            ctf.Tag = this;
+            ctf.StartPosition = FormStartPosition.Manual;
+            ctf.Location = this.Location;
             ctf.ShowDialog();
         }
 
@@ -70,6 +62,9 @@ namespace TicketSys
         {
             this.Hide();
             SearchTickets searchForm = new SearchTickets(my_UnhideForm, GetTicketList, GetTicketById, RemoveTicketById, EditTicketById, closeForm);
+            searchForm.Tag = this;
+            searchForm.StartPosition = FormStartPosition.Manual;
+            searchForm.Location = this.Location;
             searchForm.ShowDialog();
         }
 
